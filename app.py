@@ -70,7 +70,6 @@ def solution():
                           session['dire_hero_5']]))]
 
     state = [[int(s) for s in sublist] for sublist in state]
-    # return render_template('solution.html', prediction_text='You should pick {}, {}'.format(player,state))
 
     avail_moves = [i for i in range(138) if i not in [0, 24, 115, 116, 117, 118, 122, 124, 125, 127, 130, 131, 132, 133, 134]]
     avail_moves = set([i for i in avail_moves if i not in state[0] + state[1]])
@@ -79,14 +78,31 @@ def solution():
     p = d.get_player()
     output = p.get_move()
 
-    # hero = dict_id[output].capitalize()
-
     # Read csv and concat outputs
-
-    #Similaridad del Coseno Usar
-    player_data = pd.read_csv('Player_data.csv')
+    # Cut Output Heroes in 50
     output_series = pd.Series(output[:50])
-    resultado = player_data[player_data['hero_id'].isin(output_series)]
+    df = pd.DataFrame(output_series, columns=['hero_id'])
+
+    # Get the index and set in a column reversed
+    df['position'] = output_series.index
+    df['position'] = df['position'].apply(lambda x: 49 - x)
+
+    # Normalize position column
+    df['position'] = df['position'] + 1
+    df['position'] = df['position'].div(50)
+
+    # Get User Data and concat with output
+    player_data = pd.read_csv('Player_data.csv')
+    player_data = player_data[player_data['hero_id'].isin(output_series)]
+
+    # Win Rate Metric of Player
+    player_data['win_rate'] = player_data['win'] / player_data['games']
+
+    # Get Final Results. The Best Hero is the one with the highest win rate and the Highest position(Reversed)
+    resultado = pd.merge(df, player_data, on='hero_id')
+    resultado['score'] = resultado['position'] * resultado['win_rate']
+
+    resultado.sort_values(by=['score'], ascending=False, inplace=True)
     resultado_id = resultado['hero_id']
     resultado_names = [dict_id[hero] for hero in resultado_id]
 
