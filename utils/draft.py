@@ -33,7 +33,7 @@ class Draft:
         x[0, self.state[1]] = -1
         # ID de Heroes que no están en el Dataset
         x = np.delete(x, [0, 24, 115, 116, 117, 118, 122, 124, 125, 127, 130, 131, 132, 133, 134], axis=1)
-        radiant_win_rate = self.model.predict_proba(x)[0, 0]
+        radiant_win_rate = self.model.predict_proba(x)[0, 1]
         return radiant_win_rate
 
     def copy(self):
