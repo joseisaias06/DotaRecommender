@@ -1,6 +1,26 @@
 {% extends "base.html"%}
+
+{% block title %}Recommendations{% endblock %}
+
 {% block content %}
-<div class="jumbotron">
-You should pick: <b>{{ prediction_text }}</b>
+<div class="card shadow-lg" style="margin: 40px; max-width: 800px;">
+    <div class="card-body">
+        {{ message_user }}
+        <h3 class="card-title" style="margin-left: 10px; color: #8e7768;">Usted Debería de Elegir A:</h3>
+
+        <div style="max-height: 450px; overflow: auto;">
+            <table class="table table-striped">
+                {% for hero in list_heroes %}
+                <tr>
+                    <td><b>{{ loop.index }}</b></td>
+                    <td><b>{{ hero }}</b></td>
+                    <td><img src="{{ url_for('static', filename='/heroes/' + hero + '.png') }}" alt="Heroe" width="100" height="56"></td>
+                </tr>
+                {% else %}
+                    No hay héroes para mostrar
+                {% endfor %}
+            </table>
+        </div>
+    </div>
 </div>
 {% endblock %}
