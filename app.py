@@ -5,7 +5,6 @@ from flask import Flask, render_template, session, redirect, url_for
 from utils.draft import Draft
 from utils.forms import DotaForm
 from utils.variables import dict_id
-from DataExtraction import *
 
 app = Flask(__name__)
 
